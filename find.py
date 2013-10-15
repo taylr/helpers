@@ -11,6 +11,7 @@ if __name__ == "__main__":
     parser.add_argument('-x', '--exclude',   help='egrep exclude regex',               default='\.git|site-pack|\.pyc')
     parser.add_argument('-d', '--dir',       help='directory to find in',              default=os.getcwd())
     parser.add_argument('-t', '--type',      help='type to find',                      default='f')
+    parser.add_argument('-i',                help='egrep case insensitive',                           action='store_true')
 
     args = parser.parse_args()
 
@@ -20,7 +21,10 @@ if __name__ == "__main__":
     regex = args.regex_positional if args.regex_positional else args.regex
     cmd = '/usr/bin/find %s -type %s -iname "%s" | /usr/bin/egrep -v "%s"' % (args.dir, args.type, args.pattern, args.exclude)
     if regex:
-        cmd += ' | /usr/bin/xargs /usr/bin/egrep "%s"' % (regex)
+        cmd += ' | /usr/bin/xargs /usr/bin/egrep'
+        if args.i:
+            cmd += " -i"
+        cmd += ' "%s"' % (regex)
 
     print "cmd: %s" % (cmd)
     os.system(cmd)
