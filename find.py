@@ -18,10 +18,9 @@ if __name__ == "__main__":
         parser.error("Must supply a regex or pattern")
 
     regex = args.regex_positional if args.regex_positional else args.regex
-    print "positional: %s, option: %s --> %s" % (args.regex_positional, args.regex, regex)
     cmd = '/usr/bin/find %s -type %s -iname "%s" | /usr/bin/egrep -v "%s"' % (args.dir, args.type, args.pattern, args.exclude)
     if regex:
         cmd += ' | /usr/bin/xargs /usr/bin/egrep "%s"' % (regex)
 
     print "cmd: %s" % (cmd)
-    #os.system(cmd)
+    os.system(cmd)
