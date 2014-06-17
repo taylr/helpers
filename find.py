@@ -8,7 +8,7 @@ if __name__ == "__main__":
     parser.add_argument("regex_positional",  help='egrep regex (overrides -r)',        default='',                      nargs='?')
     parser.add_argument('-p', '--pattern',   help='filename pattern to match',         default='')
     parser.add_argument('-r', '--regex',     help='egrep regex for in files')
-    parser.add_argument('-x', '--exclude',   help='egrep exclude regex',               default='\.git|site-pack|\.pyc|_generated|\.png|\.jpg|fixture')
+    parser.add_argument('-x', '--exclude',   help='egrep exclude regex',               default='\.git|site-pack|\.pyc|_generated|\.png|\.jpg|fixture|migration|js-coverage|node_modules|bower_components|vendor\/|\/dist\/|\.min\.|plato-reports|\.coverage|workspace\.xml|coverage\.xml|junit\.xml|\.ipynb|\/bin\/|test.*\.xml')
     parser.add_argument('-d', '--dir',       help='directory to find in',              default=os.getcwd())
     parser.add_argument('-t', '--type',      help='type to find',                      default='f')
     parser.add_argument('-i',                help='egrep case insensitive',                           action='store_true')
