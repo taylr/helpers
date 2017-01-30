@@ -4,6 +4,9 @@ import argparse
 import os
 
 _EXCLUDE_PATTERNS = [
+    r'\.phutil_module_cache',
+    r'\.idea',
+    r'.DS_Store',
     r'\.git',
     r'site-pack',
     r'\.pyc',
@@ -34,7 +37,8 @@ _EXCLUDE_PATTERNS = [
     r'webpack-build',
     r'\/bin\/',
     r'gdelt\/app\/static',
-    r'\/app\/static'
+    r'\/app\/static',
+    r'\.cache\/'
 ]
 
 if __name__ == "__main__":
