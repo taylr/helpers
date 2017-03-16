@@ -87,5 +87,5 @@ if __name__ == "__main__":
             cmd += " -i"
         cmd += ' "{}"'.format(regex)
 
-    print "cmd: {cmd_str}".format(cmd_str=cmd)
+    print("cmd: {cmd_str}".format(cmd_str=cmd))
     os.system(cmd)
