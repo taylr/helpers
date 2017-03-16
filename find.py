@@ -3,50 +3,58 @@
 import argparse
 import os
 
-_EXCLUDE_PATTERNS = [
-    r'\.phutil_module_cache',
-    r'\.idea',
+_DEFAULT_EXCLUDE_PATTERNS = [
+    # OS
     r'.DS_Store',
+    # configuration
+    r'\.idea',
     r'\.git',
-    r'site-pack',
-    r'\.pyc',
-    r'_generated',
+    # image formats
     r'\.png',
-    r'\.jpg',
-    r'fixture',
-    r'migration',
-    r'js-coverage',
+    r'\.je?pg',
+    r'\.gif',
+    # node / js vendor files
     r'node_modules',
     r'bower_components',
-    r'vendor\/',
+    # processed and minified files
+    r'\.cache\/'
     r'\/dist\/',
     r'\.min\.',
-    r'plato-reports',
-    r'\.coverage',
-    r'workspace\.xml',
-    r'coverage\.xml',
-    r'junit\.xml',
-    r'\.ipynb',
-    r'\/bin\/',
-    r'test.*\.xml',
-    r'\/tmp\/',
-    r'\.json',
-    r'fish\/static',
-    r'\.inenv',
-    r'\.db',
+    r'\.pyc',
     r'webpack-build',
-    r'\/bin\/',
-    r'gdelt\/app\/static',
-    r'\/app\/static',
-    r'\.cache\/'
+    # test
+    r'test.*\.xml',
 ]
+
+_DEFAULT_PATTERN_FILE_NAME = '.find-helper'
+
+
+def _load_exclude_patterns(fname=None):
+    """load .find-helper or use the default excludes"""
+    print('exclude path exists?  {} {}'.format(fname, os.path.exists(fname)))
+    if fname is None or not os.path.exists(fname):
+        for path_prefix in ('./', '~/'):
+            path_to_try = os.path.abspath(os.path.expanduser(path_prefix + _DEFAULT_PATTERN_FILE_NAME))
+            if os.path.exists(path_to_try):
+                fname = path_to_try
+                print('found config {}'.format(fname))
+                break
+
+    # load defauls if not found
+    if not os.path.exists(fname):
+        print('exclude path not found "{}"'.format(fname))
+        return _DEFAULT_EXCLUDE_PATTERNS
+
+
+    return [x.strip() for x in open(os.path.expanduser(fname), 'r') if x.strip()]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='src_finder')
     parser.add_argument("regex_positional",  help='egrep regex (overrides -r)',        default='',                      nargs='?')
     parser.add_argument('-p', '--pattern',   help='filename pattern to match',         default=[],                                  action='append')
+    parser.add_argument('-X', '--exclude-file',  help='exclude-file',                      default=_DEFAULT_PATTERN_FILE_NAME)
     parser.add_argument('-r', '--regex',     help='egrep regex for in files')
-    parser.add_argument('-x', '--exclude',   help='egrep exclude regex',               default=_EXCLUDE_PATTERNS,       nargs='?',  action='append')
+    parser.add_argument('-x', '--exclude',   help='egrep exclude regex',               default=[],                      nargs='?',  action='append')
     parser.add_argument('-d', '--dir',       help='directory to find in',              default=os.getcwd())
     parser.add_argument('-t', '--type',      help='type to find',                      default='f')
     parser.add_argument('-i',                help='egrep case insensitive',                                                         action='store_true')
@@ -63,8 +71,14 @@ if __name__ == "__main__":
             cmd += ' -o '
         cmd += ' -iname "{}"'.format(p)
 
+    exclude_patterns = _load_exclude_patterns(args.exclude_file)
     if args.exclude:
-        cmd += ' | /usr/bin/egrep -v "{}"'.format('|'.join(args.exclude))
+        exclude_patterns.extend(args.exclude)
+
+    # unique and sort the exclude patters
+    if exclude_patterns:
+        cmd += ' | /usr/bin/egrep -v "{}"'.format('|'.join(sorted(set(exclude_patterns))))
+
     if regex:
         cmd += ' | /usr/bin/xargs /usr/bin/egrep'
         if args.i:
