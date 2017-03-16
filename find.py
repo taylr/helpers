@@ -49,7 +49,9 @@ def _load_exclude_patterns(fname=None):
     return [x.strip() for x in open(os.path.expanduser(fname), 'r') if x.strip()]
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(prog='src_finder')
+    parser = argparse.ArgumentParser(
+        prog='find.py',
+        description='egrep in files excluding paths specified by regex in ~/.find-helper or ./.find-helper')
     parser.add_argument("regex_positional",  help='egrep regex (overrides -r)',        default='',                      nargs='?')
     parser.add_argument('-p', '--pattern',   help='filename pattern to match',         default=[],                                  action='append')
     parser.add_argument('-X', '--exclude-file',  help='exclude-file',                      default=_DEFAULT_PATTERN_FILE_NAME)
