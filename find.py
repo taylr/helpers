@@ -31,13 +31,11 @@ _DEFAULT_PATTERN_FILE_NAME = '.find-helper'
 
 def _load_exclude_patterns(fname=None):
     """load .find-helper or use the default excludes"""
-    print('exclude path exists?  {} {}'.format(fname, os.path.exists(fname)))
     if fname is None or not os.path.exists(fname):
         for path_prefix in ('./', '~/'):
             path_to_try = os.path.abspath(os.path.expanduser(path_prefix + _DEFAULT_PATTERN_FILE_NAME))
             if os.path.exists(path_to_try):
                 fname = path_to_try
-                print('found config {}'.format(fname))
                 break
 
     # load defauls if not found
